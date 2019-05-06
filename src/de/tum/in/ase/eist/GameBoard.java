@@ -207,9 +207,11 @@ public class GameBoard {
 
                 // DONE 2: The loser car is crunched and stops driving
 
-                showAsyncAlert(isWinner() ? "You won" : "You lose");
+                if (loserCars.size() == cars.size()) {
+                    showAsyncAlert(isWinner() ? "You won" : "You lose");
+                }
 
-                // DONE 3: The player gets notified when he looses or wins the game
+                // TODO 3: The player gets notified when he looses or wins the game
                 // Hint: you should use the two methods 'showAsyncAlert(String)' and
                 // 'isWinner()' below for your implementation
 
