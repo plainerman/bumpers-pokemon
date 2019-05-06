@@ -188,7 +188,7 @@ public class GameBoard {
                 continue; // because there is no need to check for a collision
             }
 
-            // TODO 4: Add a new collision type!
+            // DONE 4: Add a new collision type!
             // Hint: Make sure to create a subclass of the class Collision
             // and store it in the new Collision package.
             // Create a new collision object
