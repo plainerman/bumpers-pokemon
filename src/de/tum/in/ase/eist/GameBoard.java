@@ -207,11 +207,11 @@ public class GameBoard {
 
                 // DONE 2: The loser car is crunched and stops driving
 
-                if (loserCars.size() == cars.size()) {
+                if (player.getCar().isCrunched || cars.stream().filter(c -> c != player.getCar()).allMatch(c -> c.isCrunched)) {
                     showAsyncAlert(isWinner() ? "You won" : "You lose");
                 }
 
-                // TODO 3: The player gets notified when he looses or wins the game
+                // Done 3: The player gets notified when he looses or wins the game
                 // Hint: you should use the two methods 'showAsyncAlert(String)' and
                 // 'isWinner()' below for your implementation
 
