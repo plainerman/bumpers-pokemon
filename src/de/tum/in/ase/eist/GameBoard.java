@@ -33,6 +33,7 @@ public class GameBoard {
     // used for testing, DO NOT DELETE THIS
     public String result;
     public boolean printed;
+    private boolean gameOver = false;
 
     //constants
     public static int NUMBER_OF_SLOW_CARS = 5;
@@ -140,6 +141,7 @@ public class GameBoard {
     public void stopGame() {
         stopMusic();
         this.isRunning = false;
+        this.gameOver = false;
     }
 
     /**
@@ -207,10 +209,16 @@ public class GameBoard {
 
                 // DONE 2: The loser car is crunched and stops driving
 
-                if (player.getCar().isCrunched || cars.stream().filter(c -> c != player.getCar()).allMatch(c -> c.isCrunched)) {
-                    showAsyncAlert(isWinner() ? "You won" : "You lose");
+                if (!gameOver) {
+                    gameOver = true;
+                    if (loser == player.getCar()) {
+                        showAsyncAlert("You lose");
+                    } else if (isWinner()) {
+                        showAsyncAlert("You win");
+                    } else {
+                        gameOver = false;
+                    }
                 }
-
                 // Done 3: The player gets notified when he looses or wins the game
                 // Hint: you should use the two methods 'showAsyncAlert(String)' and
                 // 'isWinner()' below for your implementation
