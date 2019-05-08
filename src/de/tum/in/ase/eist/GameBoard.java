@@ -213,8 +213,10 @@ public class GameBoard {
                     gameOver = true;
                     if (loser == player.getCar()) {
                         showAsyncAlert("You lose");
+                        result = "lose";
                     } else if (isWinner()) {
                         showAsyncAlert("You win");
+                        result = "win";
                     } else {
                         gameOver = false;
                     }
