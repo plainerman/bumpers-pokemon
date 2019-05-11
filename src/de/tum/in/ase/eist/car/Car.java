@@ -55,6 +55,10 @@ public abstract class Car {
         this(maxX, maxY, new Dimension2D(50, 25), height);
     }
 
+    public Car(int maxX, int maxY) {
+        this(maxX, maxY, 300);
+    }
+
     /**
      * The car's position is reset to the top left corner of the game. The speed
      * is set to 5 and the directions points to 90 degrees.
