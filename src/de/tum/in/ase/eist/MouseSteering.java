@@ -48,9 +48,9 @@ public class MouseSteering  {
         public void handle(MouseEvent e) {
         	Point2D carPosition = MouseSteering.this.getUserCar().getPosition();
         	Point2D clickPosition = MouseSteering.this.getGameBoard().convertPosition(new Point2D(e.getX(), e.getY()));
-    		int deltaX = (int) (clickPosition.getX() - carPosition.getX());
+    		double deltaX = (double) (clickPosition.getX() - carPosition.getX());
     		deltaX = Math.abs(deltaX);
-    		int deltaY = (int) (clickPosition.getY() - carPosition.getY());
+			double deltaY = (double) (clickPosition.getY() - carPosition.getY());
     		double diff = ((double)deltaY) / ((double)deltaX);
     		double theta = Math.atan(diff);
     		int degree = (int)Math.toDegrees(theta);

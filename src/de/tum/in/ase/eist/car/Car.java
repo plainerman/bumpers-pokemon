@@ -13,9 +13,9 @@ import javafx.scene.shape.Rectangle;
  */
 public abstract class Car {
 
-    public int MAX_SPEED = 10;
-    public int MIN_SPEED = 2;
-    protected int speed = this.MIN_SPEED;
+    public double MAX_SPEED = 10;
+    public double MIN_SPEED = 2;
+    protected double speed = this.MIN_SPEED;
 
     private Image icon;
     protected Point2D position;
@@ -68,7 +68,7 @@ public abstract class Car {
     public void reset(int maxY) {
         this.position = new Point2D(0, maxY);
         setDirection(90);
-        this.speed = 5;
+        setRandomSpeed();
         this.isCrunched = false;
     }
 
@@ -76,7 +76,7 @@ public abstract class Car {
      * Sets the speed of the car to a random value based on its initial speed
      */
     protected void setRandomSpeed() {
-        int initialSpeed = (int) (Math.random() * this.MAX_SPEED);
+        double initialSpeed = (Math.random() * this.MAX_SPEED);
         if (initialSpeed < this.MIN_SPEED) {
             initialSpeed = this.MIN_SPEED;
         }
@@ -100,7 +100,7 @@ public abstract class Car {
         return this.direction;
     }
 
-    public int getSpeed() {
+    public double getSpeed() {
         return this.speed;
     }
 
@@ -201,8 +201,8 @@ public abstract class Car {
         if (this.isCrunched)
             return;
         // calculate delta between old coordinates and new ones based on speed and direction
-        float delta_x = this.speed * (float) Math.sin(Math.toRadians(this.direction));
-        float delta_y = this.speed * (float) Math.cos(Math.toRadians(this.direction));
+        double delta_x = this.speed * Math.sin(Math.toRadians(this.direction));
+        double delta_y = this.speed * Math.cos(Math.toRadians(this.direction));
 
         // set coordinates
         this.position = new Point2D(this.position.getX() + delta_x, this.position.getY() + delta_y);

@@ -13,8 +13,8 @@ public class Pokemon extends Car {
 
     public Pokemon(int maxX, int maxY, double height) {
         super(maxX, maxY, new Dimension2D(35, 35), height);
-        this.MIN_SPEED = 2;
-        this.MAX_SPEED = 7;
+        this.MIN_SPEED = 1;
+        this.MAX_SPEED = 2;
         this.setRandomSpeed();
         this.index = rand.nextInt(POKEMON_COUNT);
         this.setImage("pokemon" + index + ".png");

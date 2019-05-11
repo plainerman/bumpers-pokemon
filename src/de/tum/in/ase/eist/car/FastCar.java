@@ -23,7 +23,9 @@ public class FastCar extends Car {
 
     public FastCar(Dimension2D size, double height) {
         super((int) size.getWidth(), (int) size.getHeight(), size, height);
-        this.speed = 3;
+        this.MIN_SPEED = 2.4;
+        this.MAX_SPEED = 3.4;
+        this.setRandomSpeed();
         this.setImage(DEFAULT_FAST_CAR_IMAGE_FILE);
     }
 
