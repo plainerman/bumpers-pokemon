@@ -10,21 +10,22 @@ public class PokemonData {
     public static class MetaInfo {
         public final String name;
         public final int health;
-//        public int type;
+        public Move[] moves;
 
-        public MetaInfo(String name, int health) {
+        public MetaInfo(String name, int health, Move... moves) {
             this.name = name;
             this.health = health;
+            this.moves = moves;
         }
     }
 
     public static final MetaInfo[] DEFAULT_INFO = new MetaInfo[]{
-            new MetaInfo("Pikachu", 200),
-            new MetaInfo("Charizard", 120),
-            new MetaInfo("Pidgeotto", 70),
-            new MetaInfo("Dragonite", 150),
-            new MetaInfo("Torkoal", 200),
-            new MetaInfo("Walrein", 300),
+            new MetaInfo("Pikachu", 500, Move.QUICK_ATTACK, Move.TAIL_WHIP, Move.THUNDER_BOLT, Move.THUNDER_SHOCK),
+            new MetaInfo("Charizard", 120, Move.TAIL_WHIP, Move.FLARE_BLITZ, Move.HEAT_WAVE),
+            new MetaInfo("Pidgeotto", 70, Move.TAIL_WHIP, Move.QUICK_ATTACK, Move.RAZOR_WIND, Move.WING_ATTACK),
+            new MetaInfo("Dragonite", 150, Move.TAIL_WHIP, Move.DRAGON_TAIL, Move.SLAM),
+            new MetaInfo("Torkoal", 200, Move.HEAT_WAVE, Move.FLARE_BLITZ, Move.EARTH_QUAKE),
+            new MetaInfo("Walrein", 300, Move.SLAM, Move.ICE_BALL, Move.BLIZZARD),
     };
 
     public int health;
