@@ -58,7 +58,7 @@ public class GameBoard {
     public GameBoard(GameBoardUI ui, Dimension2D size) {
         this.ui = ui;
         this.size = size;
-        Car playerCar = pokemon ? new FastCar(new Dimension2D(30, 30), this.size.getHeight()) :
+        FastCar playerCar = pokemon ? new FastCar(new Dimension2D(30, 30), this.size.getHeight()) :
                 new FastCar(250, 30, this.size.getHeight());
         this.player = new Player(playerCar);
         this.audioPlayer = new AudioPlayer();
@@ -90,6 +90,7 @@ public class GameBoard {
         this.cars.clear();
         this.audioPlayer.endCrashSound(false);
         Pokemon.resetUsedIndices();
+        if (getPlayerCar().pokemon != null) getPlayerCar().pokemon.reset();
         addCars();
     }
 
@@ -126,7 +127,7 @@ public class GameBoard {
     /**
      * @return the player's car
      */
-    public Car getPlayerCar() {
+    public FastCar getPlayerCar() {
         return this.player.getCar();
     }
 

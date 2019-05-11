@@ -1,11 +1,14 @@
 package de.tum.in.ase.eist.car;
 
 
+import de.tum.in.ase.eist.PokemonData;
 import javafx.geometry.Dimension2D;
 
 public class FastCar extends Car {
 
     public static String DEFAULT_FAST_CAR_IMAGE_FILE = "FastCar.gif";
+
+    public final PokemonData pokemon;
 
     /**
      * Constructor for a FastCar.
@@ -19,6 +22,8 @@ public class FastCar extends Car {
         this.MAX_SPEED = 10;
         this.setRandomSpeed();
         this.setImage(DEFAULT_FAST_CAR_IMAGE_FILE);
+
+        pokemon = null;
     }
 
     public FastCar(Dimension2D size, double height) {
@@ -27,9 +32,13 @@ public class FastCar extends Car {
         this.MAX_SPEED = 3.4;
         this.setRandomSpeed();
         this.setImage(DEFAULT_FAST_CAR_IMAGE_FILE);
+
+        this.pokemon = new PokemonData(0);
     }
 
     public FastCar(int maxX, int maxY) {
         super(maxX, maxY);
+
+        pokemon = null;
     }
 }

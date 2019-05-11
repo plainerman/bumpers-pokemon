@@ -58,9 +58,9 @@ public class PokemonCollision extends Collision {
         ui.clear(gc, Color.BLACK);
         paintCarsAndSleep(ui, gc, duration);
 
-        winner = evaluate(gameBoard, ui, gc);
 
-        sleep(2000);
+
+        winner = evaluate(gameBoard, ui, gc);
 
         gameBoard.setMoveCars(true);
         gameBoard.getAudioPlayer().endCrashSound(this.gameBoard.isRunning());
