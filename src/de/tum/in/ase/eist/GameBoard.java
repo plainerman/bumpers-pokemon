@@ -228,10 +228,15 @@ public class GameBoard {
                 if (!gameOver) {
                     gameOver = true;
                     if (loser == player.getCar()) {
-                        showAsyncAlert("You lose");
+                        showAsyncAlerts("Hello, and welcome to the Pokémon Center.\nWe restore your tired Pokémon to " +
+                                "full health.\nI'll take your Pokémon for a few seconds.\n...", "Thank you for " +
+                                "waiting.\nWe've restored your Pokémon to full health.\nWe hope to see you " +
+                                "again!");
                         result = "lose";
                     } else if (isWinner()) {
-                        showAsyncAlert("You win");
+                        showAsyncAlert("The Pokémon you sent into the battle...\nAt times they danced like a spring " +
+                                "breeze, and at times they struck like lightning.\nIt was with light, yet surefooted," +
+                                " elegance that you led your Pokémon.\nYou now stand at the glorious peak of the Pokémon League.");
                         result = "win";
                     } else {
                         gameOver = false;
@@ -257,6 +262,16 @@ public class GameBoard {
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setHeaderText(message);
             alert.showAndWait();
+        });
+        setPrinted(true);
+    }
+
+    private void showAsyncAlerts(String message1, String message2) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setHeaderText(message1);
+            alert.showAndWait();
+            showAsyncAlert(message2);
         });
         setPrinted(true);
     }
