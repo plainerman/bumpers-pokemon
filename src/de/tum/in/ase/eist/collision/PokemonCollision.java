@@ -2,7 +2,10 @@ package de.tum.in.ase.eist.collision;
 
 import de.tum.in.ase.eist.GameBoard;
 import de.tum.in.ase.eist.GameBoardUI;
+import de.tum.in.ase.eist.PokemonData;
 import de.tum.in.ase.eist.car.Car;
+import de.tum.in.ase.eist.car.Pokemon;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -10,6 +13,7 @@ import javafx.scene.shape.Rectangle;
 public class PokemonCollision extends Collision {
     private GameBoard gameBoard;
     private Car winner;
+    public static final int SIZE = 100;
 
     public PokemonCollision(GameBoard gameBoard, Car car1, Car car2) {
         super();
@@ -58,9 +62,23 @@ public class PokemonCollision extends Collision {
         ui.clear(gc, Color.BLACK);
         paintCarsAndSleep(ui, gc, duration);
 
+        PokemonData player = gameBoard.getPlayer().getCar().pokemon;
+        PokemonData pokemon = car1 == gameBoard.getPlayerCar() ? ((Pokemon) car2).data : ((Pokemon) car1).data;
 
+        Point2D playerPos = new Point2D(-SIZE, ui.getHeight() - SIZE - 50);
+        Point2D pokemonPos = new Point2D(ui.getWidth(), 5);
+        for (i = 0; i <= SIZE && gameBoard.isRunning(); i++) {
+            ui.clear(gc);
+            gc.drawImage(player.icon, playerPos.getX(), playerPos.getY(), SIZE, SIZE);
+            gc.drawImage(pokemon.icon, pokemonPos.getX(), pokemonPos.getY(), SIZE, SIZE);
 
-        winner = evaluate(gameBoard, ui, gc);
+            playerPos = playerPos.add(1.5, 0);
+            pokemonPos = pokemonPos.add(-1.5, 0);
+
+            sleep(20);
+        }
+
+        winner = evaluate(gameBoard, ui, gc, player, pokemon, playerPos, pokemonPos);
 
         gameBoard.setMoveCars(true);
         gameBoard.getAudioPlayer().endCrashSound(this.gameBoard.isRunning());
@@ -68,10 +86,18 @@ public class PokemonCollision extends Collision {
         return winner;
     }
 
-    protected Car evaluate(GameBoard gameBoard, GameBoardUI ui, GraphicsContext gc) {
-        ui.clear(gc);
+    protected Car evaluate(GameBoard gameBoard, GameBoardUI ui, GraphicsContext gc, PokemonData player,
+                           PokemonData pokemon, Point2D playerPos, Point2D pokemonPos) {
+        int i = 0;
+        while (gameBoard.isRunning() && i++ < 100) {
+            ui.clear(gc);
 
-        sleep(2000);
+            gc.drawImage(player.icon, playerPos.getX(), playerPos.getY(), SIZE, SIZE);
+            gc.drawImage(pokemon.icon, pokemonPos.getX(), pokemonPos.getY(), SIZE, SIZE);
+
+            sleep(ui.SLEEP_TIME);
+        }
+
         return gameBoard.getPlayerCar();
     }
 

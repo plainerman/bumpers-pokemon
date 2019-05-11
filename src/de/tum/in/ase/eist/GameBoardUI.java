@@ -18,7 +18,7 @@ import java.awt.*;
  */
 public class GameBoardUI extends Canvas implements Runnable {
     private static Color backgroundColor = Color.WHITE;
-    private static int SLEEP_TIME = 1000 / 25; // this gives us 25fps
+    public static int SLEEP_TIME = 1000 / 25; // this gives us 25fps
     public static Dimension2D DEFAULT_SIZE = new Dimension2D(500, 300);
     // attribute inherited by the JavaFX Canvas class
     GraphicsContext graphicsContext = this.getGraphicsContext2D();

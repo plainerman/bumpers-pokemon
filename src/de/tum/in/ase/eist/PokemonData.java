@@ -7,27 +7,32 @@ import java.io.InputStream;
 
 public class PokemonData {
 
-//    public class MetaInfo {
-//        public int health;
+    public static class MetaInfo {
+        public final int health;
 //        public int type;
-//    }
-//
-//    public static final MetaInfo[] DEFAULT_INFO = new MetaInfo[]{
-//
-//    };
-//
-//    public final MetaInfo info;
+
+        public MetaInfo(int health) {
+            this.health = health;
+        }
+    }
+
+    public static final MetaInfo[] DEFAULT_INFO = new MetaInfo[]{
+            new MetaInfo(200), //Pikachu
+            new MetaInfo(120), //Glurak
+            new MetaInfo(70), //Tauboss
+            new MetaInfo(150), //Dragoran
+            new MetaInfo(200), //Quirtel
+            new MetaInfo(300), //Walraisa
+    };
+
     public int health;
     public final int index;
 
     public final Image icon;
-    public final Image animatedIcon;
 
     public PokemonData(int index) {
         this.index = index;
-        this.icon = getIcon("pokemon" + index + ".png");
-        this.animatedIcon = getIcon("pokemon" + index + ".gif");
-
+        this.icon = getIcon("pokemon" + index + ".gif");
         reset();
     }
 
@@ -42,6 +47,7 @@ public class PokemonData {
     }
 
     public void reset() {
-        health = 100; //TODO set correct health
+        final MetaInfo info = DEFAULT_INFO[index];
+        this.health = info.health;
     }
 }
