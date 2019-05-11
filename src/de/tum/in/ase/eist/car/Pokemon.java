@@ -7,23 +7,15 @@ import java.util.Random;
 public class Pokemon extends Car {
 
     protected final int index;
-    protected static final int POKEMON_COUNT = 1;
+    protected static final int POKEMON_COUNT = 6;
 
     private static final Random rand = new Random();
 
     public Pokemon(int maxX, int maxY, double height) {
-        super(maxX, maxY, new Dimension2D(100, 100), height);
+        super(maxX, maxY, new Dimension2D(35, 35), height);
         this.MIN_SPEED = 2;
         this.MAX_SPEED = 7;
         this.setRandomSpeed();
-        //TODO: remove
-        if (rand.nextBoolean()) {
-            this.setPosition(maxX / 2 + 40, maxY / 2 + 40);
-
-        }else {
-            this.setPosition(maxX / 2 - 40, maxY / 2 - 40);
-
-        }
         this.index = rand.nextInt(POKEMON_COUNT);
         this.setImage("pokemon" + index + ".png");
     }

@@ -50,7 +50,8 @@ public class GameBoard {
      */
     public GameBoard(Dimension2D size) {
         this.size = size;
-        Car playerCar = new FastCar(250, 30, this.size.getHeight());
+        Car playerCar = pokemon ? new FastCar(new Dimension2D(30, 30), this.size.getHeight()) :
+                new FastCar(250, 30, this.size.getHeight());
         this.player = new Player(playerCar);
         this.audioPlayer = new AudioPlayer();
         this.result = "undefined";
@@ -63,9 +64,11 @@ public class GameBoard {
     public void addCars() {
         for (int i = 0; i < NUMBER_OF_SLOW_CARS; i++) {
             if (GraphicsEnvironment.isHeadless()) {
-                this.cars.add(new SlowCar((int) this.size.getWidth(), (int) this.size.getHeight(), this.size.getHeight()));
+                this.cars.add(new SlowCar((int) this.size.getWidth(), (int) this.size.getHeight(),
+                        this.size.getHeight()));
             } else {
-                this.cars.add(new Pokemon((int) this.size.getWidth(), (int) this.size.getHeight(), this.size.getHeight()));
+                this.cars.add(new Pokemon((int) this.size.getWidth(), (int) this.size.getHeight(),
+                        this.size.getHeight()));
             }
         }
     }
