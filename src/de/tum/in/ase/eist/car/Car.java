@@ -100,8 +100,8 @@ public abstract class Car {
         return this.direction;
     }
 
-    public double getSpeed() {
-        return this.speed;
+    public int getSpeed() {
+        return (int) Math.round(this.speed);
     }
 
     /**
