@@ -46,6 +46,10 @@ public class GameBoard {
 
     protected boolean moveCars = true;
 
+    public GameBoard(Dimension2D size) {
+        this(null, size);
+    }
+
     /**
      * Constructor, creates the gameboard based on size
      *
