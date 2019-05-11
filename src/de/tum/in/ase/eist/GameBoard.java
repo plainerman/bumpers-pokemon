@@ -5,6 +5,7 @@ import java.util.List;
 
 import de.tum.in.ase.eist.car.Car;
 import de.tum.in.ase.eist.car.FastCar;
+import de.tum.in.ase.eist.car.Pokemon;
 import de.tum.in.ase.eist.car.SlowCar;
 import de.tum.in.ase.eist.collision.Collision;
 import javafx.application.Platform;
@@ -58,7 +59,7 @@ public class GameBoard {
      */
     public void addCars() {
         for (int i = 0; i < NUMBER_OF_SLOW_CARS; i++) {
-            this.cars.add(new SlowCar((int) this.size.getWidth(), (int) this.size.getHeight()));
+            this.cars.add(new Pokemon((int) this.size.getWidth(), (int) this.size.getHeight()));
         }
     }
 

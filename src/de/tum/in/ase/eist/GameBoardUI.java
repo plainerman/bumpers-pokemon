@@ -133,10 +133,12 @@ public class GameBoardUI extends Canvas implements Runnable {
 	 * @param graphics used to draw changes
 	 */
 	private void paintCar(Car car, GraphicsContext graphics) {
-		Point2D carPosition = car.getPosition();
-		Point2D canvasPosition = convertPosition(carPosition);
-		graphics.drawImage(car.getIcon(), canvasPosition.getX(), canvasPosition.getY(), 
-				car.getSize().getWidth(), car.getSize().getHeight());
+		if (!car.isCrunched) {
+			Point2D carPosition = car.getPosition();
+			Point2D canvasPosition = convertPosition(carPosition);
+			graphics.drawImage(car.getIcon(), canvasPosition.getX(), canvasPosition.getY(),
+					car.getSize().getWidth(), car.getSize().getHeight());
+		}
 	}
 
 	/**
