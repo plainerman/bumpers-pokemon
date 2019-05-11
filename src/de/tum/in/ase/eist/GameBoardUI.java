@@ -189,4 +189,8 @@ public class GameBoardUI extends Canvas implements Runnable {
             this.toolBar.resetToolBarButtonStatus(false);
         }
     }
+
+    public Toolbar getToolBar() {
+        return toolBar;
+    }
 }

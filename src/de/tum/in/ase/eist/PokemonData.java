@@ -8,21 +8,23 @@ import java.io.InputStream;
 public class PokemonData {
 
     public static class MetaInfo {
+        public final String name;
         public final int health;
 //        public int type;
 
-        public MetaInfo(int health) {
+        public MetaInfo(String name, int health) {
+            this.name = name;
             this.health = health;
         }
     }
 
     public static final MetaInfo[] DEFAULT_INFO = new MetaInfo[]{
-            new MetaInfo(200), //Pikachu
-            new MetaInfo(120), //Glurak
-            new MetaInfo(70), //Tauboss
-            new MetaInfo(150), //Dragoran
-            new MetaInfo(200), //Quirtel
-            new MetaInfo(300), //Walraisa
+            new MetaInfo("Pikachu", 200),
+            new MetaInfo("Charizard", 120),
+            new MetaInfo("Pidgeotto", 70),
+            new MetaInfo("Dragonite", 150),
+            new MetaInfo("Torkoal", 200),
+            new MetaInfo("Walrein", 300),
     };
 
     public int health;

@@ -95,6 +95,9 @@ public class PokemonCollision extends Collision {
             gc.drawImage(player.icon, playerPos.getX(), playerPos.getY(), SIZE, SIZE);
             gc.drawImage(pokemon.icon, pokemonPos.getX(), pokemonPos.getY(), SIZE, SIZE);
 
+
+            player.health -= 1;
+            ui.getToolBar().setHealth(player.health);
             sleep(ui.SLEEP_TIME);
         }
 

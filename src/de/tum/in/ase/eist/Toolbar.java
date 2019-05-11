@@ -1,88 +1,96 @@
 package de.tum.in.ase.eist;
 
 import java.util.Optional;
+
+import de.tum.in.ase.eist.car.Pokemon;
+import de.tum.in.ase.eist.collision.PokemonCollision;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Separator;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 
 /**
- * 
  * This class visualizes the tool bar with start, stop and exit buttons above
  * the game board.
- *
  */
 public class Toolbar extends ToolBar {
-	private BumpersApplication gameWindow;
-	private Button start;
-	private Button stop;
+    private BumpersApplication gameWindow;
+    private Button start;
+    private Button stop;
+    private Label pokemonLabel;
+    private Label healthLabel;
 
-	public Toolbar(BumpersApplication gameWindow) {
-		this.start = new Button("Start");
-		this.stop = new Button("Stop");
-		initActions();
-		this.getItems().addAll(start, new Separator(), stop);
-		this.setGameWindow(gameWindow);
-	}
+    public Toolbar(BumpersApplication gameWindow) {
+        this.start = new Button("Start");
+        this.stop = new Button("Stop");
+        this.pokemonLabel = new Label(PokemonData.DEFAULT_INFO[0].name + ": ");
+        this.healthLabel = new Label("" + PokemonData.DEFAULT_INFO[0].health);
+        initActions();
+        this.getItems().addAll(start, new Separator(), stop, new Separator(), pokemonLabel, healthLabel);
+        this.setGameWindow(gameWindow);
+    }
 
-	/**
-	 * Initialises the actions
-	 */
-	private void initActions() {
-		this.start.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				getGameWindow().gameBoardUI.startGame();
-			}
-		});
+    public void setHealth(int health) {
+        Platform.runLater(() -> {
+            this.healthLabel.setText("" + health);
+        });
+    }
 
-		this.stop.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				Toolbar.this.getGameWindow().gameBoardUI.stopGame();
+    /**
+     * Initialises the actions
+     */
+    private void initActions() {
+        this.start.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                getGameWindow().gameBoardUI.startGame();
+            }
+        });
 
-				ButtonType YES = new ButtonType("Yes", ButtonBar.ButtonData.YES);
-				ButtonType NO = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+        this.stop.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Toolbar.this.getGameWindow().gameBoardUI.stopGame();
 
-				Alert alert = new Alert(AlertType.CONFIRMATION, "Do you really want to stop the game ?", YES, NO);
-				alert.setTitle("Stop Game Confirmation");
-				alert.setHeaderText("");
+                ButtonType YES = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+                ButtonType NO = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
 
-				Optional<ButtonType> result = alert.showAndWait();
-				if (result.get() == YES) {
-					getGameWindow().gameBoardUI.gameSetup();
-				} else {
-					getGameWindow().gameBoardUI.startGame();
-				}
-			}
-		});
-	}
+                Alert alert = new Alert(AlertType.CONFIRMATION, "Do you really want to stop the game ?", YES, NO);
+                alert.setTitle("Stop Game Confirmation");
+                alert.setHeaderText("");
 
-	/**
-	 * Resets the toolbar button status
-	 * @param running Used to disable/enable buttons
-	 */
-	public void resetToolBarButtonStatus(boolean running) {
-		this.start.setDisable(running);
-		this.stop.setDisable(!running);
-	}
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == YES) {
+                    getGameWindow().gameBoardUI.gameSetup();
+                } else {
+                    getGameWindow().gameBoardUI.startGame();
+                }
+            }
+        });
+    }
 
-	/**
-	 * @return current gameWindow
-	 */
-	public BumpersApplication getGameWindow() {
-		return this.gameWindow;
-	}
+    /**
+     * Resets the toolbar button status
+     *
+     * @param running Used to disable/enable buttons
+     */
+    public void resetToolBarButtonStatus(boolean running) {
+        this.start.setDisable(running);
+        this.stop.setDisable(!running);
+    }
 
-	/**
-	 * @param gameWindow New gameWindow to be set
-	 */
-	public void setGameWindow(BumpersApplication gameWindow) {
-		this.gameWindow = gameWindow;
-	}
+    /**
+     * @return current gameWindow
+     */
+    public BumpersApplication getGameWindow() {
+        return this.gameWindow;
+    }
+
+    /**
+     * @param gameWindow New gameWindow to be set
+     */
+    public void setGameWindow(BumpersApplication gameWindow) {
+        this.gameWindow = gameWindow;
+    }
 }
