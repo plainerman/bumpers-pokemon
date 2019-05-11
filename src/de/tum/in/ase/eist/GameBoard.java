@@ -40,8 +40,10 @@ public class GameBoard {
     private boolean pokemon = !GraphicsEnvironment.isHeadless();
 
     //constants
-    public static int NUMBER_OF_SLOW_CARS = 5;
+    public static int NUMBER_OF_SLOW_CARS = 8;
     public static int NUMBER_OF_TESLA_CARS = 2;
+
+    protected boolean moveCars = true;
 
     /**
      * Constructor, creates the gameboard based on size
@@ -182,71 +184,78 @@ public class GameBoard {
      * Update player car afterwards separately
      */
     public void moveCars() {
+        if (moveCars) {
+            List<Car> cars = getCars();
 
-        List<Car> cars = getCars();
+            // maximum x and y values a car can have depending on the size of the game board
+            int maxX = (int) size.getWidth();
+            int maxY = (int) size.getHeight();
 
-        // maximum x and y values a car can have depending on the size of the game board
-        int maxX = (int) size.getWidth();
-        int maxY = (int) size.getHeight();
-
-        // update the positions of the player car and the autonomous cars
-        for (Car car : cars) {
-            car.updatePosition(maxX, maxY);
-        }
-
-        player.getCar().updatePosition(maxX, maxY);
-
-        // iterate through all cars (except player car) and check if it is crunched
-        for (Car car : cars) {
-            if (car.isCrunched()) {
-                continue; // because there is no need to check for a collision
+            // update the positions of the player car and the autonomous cars
+            for (Car car : cars) {
+                car.updatePosition(maxX, maxY);
             }
 
-            // DONE 4: Add a new collision type!
-            // Hint: Make sure to create a subclass of the class Collision
-            // and store it in the new Collision package.
-            // Create a new collision object
-            // and check if the collision between player car and autonomous car evaluates as expected
+            player.getCar().updatePosition(maxX, maxY);
 
-            Collision collision = pokemon ? new PokemonCollision(player.getCar(), car) :
-                    new Collision(player.getCar(), car);
+            // iterate through all cars (except player car) and check if it is crunched
+            for (Car car : cars) {
+                if (car.isCrunched()) {
+                    continue; // because there is no need to check for a collision
+                }
 
-            if (collision.isCollision) {
-                Car winner = collision.evaluate();
-                Car loser = collision.evaluateLoser();
+                // DONE 4: Add a new collision type!
+                // Hint: Make sure to create a subclass of the class Collision
+                // and store it in the new Collision package.
+                // Create a new collision object
+                // and check if the collision between player car and autonomous car evaluates as expected
+
+                Collision collision = pokemon ? new PokemonCollision(this, player.getCar(), car) :
+                        new Collision(player.getCar(), car);
+
+                if (collision.isCollision) {
+                    Car winner = collision.evaluate();
+                    Car loser = collision.evaluateLoser();
 //                if (pokemon) {
 //                    if (loser != player.getCar() && winner != player.getCar())
 //                        continue;
 //                }
-                System.out.println(winner);
-                loserCars.add(loser);
-                audioPlayer.playCrashSound();
+                    System.out.println(winner);
+                    loserCars.add(loser);
+                    audioPlayer.playCrashSound();
 
-                loser.setCrunched();
+                    loser.setCrunched();
 
-                // DONE 2: The loser car is crunched and stops driving
+                    // DONE 2: The loser car is crunched and stops driving
 
-                if (!gameOver) {
-                    gameOver = true;
-                    if (loser == player.getCar()) {
-                        showAsyncAlerts("Hello, and welcome to the Pokémon Center.\nWe restore your tired Pokémon to " +
-                                "full health.\nI'll take your Pokémon for a few seconds.\n...", "Thank you for " +
-                                "waiting.\nWe've restored your Pokémon to full health.\nWe hope to see you " +
-                                "again!");
-                        result = "lose";
-                    } else if (isWinner()) {
-                        showAsyncAlert("The Pokémon you sent into the battle...\nAt times they danced like a spring " +
-                                "breeze, and at times they struck like lightning.\nIt was with light, yet surefooted," +
-                                " elegance that you led your Pokémon.\nYou now stand at the glorious peak of the Pokémon League.");
-                        result = "win";
-                    } else {
-                        gameOver = false;
+                    if (!gameOver) {
+                        gameOver = true;
+                        if (loser == player.getCar()) {
+                            showAsyncAlerts("Hello, and welcome to the Pokémon Center.\nWe restore your tired Pokémon" +
+                                    " to " +
+                                    "full health.\nI'll take your Pokémon for a few seconds.\n...", "Thank you for " +
+                                    "waiting.\nWe've restored your Pokémon to full health.\nWe hope to see you " +
+                                    "again!");
+                            result = "lose";
+                            audioPlayer.endCrashSound(false);
+                        } else if (isWinner()) {
+                            showAsyncAlert("The Pokémon you sent into the battle...\nAt times they danced like a " +
+                                    "spring " +
+                                    "breeze, and at times they struck like lightning.\nIt was with light, yet " +
+                                    "surefooted," +
+                                    " elegance that you led your Pokémon.\nYou now stand at the glorious peak of the " +
+                                    "Pokémon League.");
+                            result = "win";
+                            audioPlayer.endCrashSound(false);
+                        } else {
+                            gameOver = false;
+                        }
                     }
-                }
-                // Done 3: The player gets notified when he looses or wins the game
-                // Hint: you should use the two methods 'showAsyncAlert(String)' and
-                // 'isWinner()' below for your implementation
+                    // Done 3: The player gets notified when he looses or wins the game
+                    // Hint: you should use the two methods 'showAsyncAlert(String)' and
+                    // 'isWinner()' below for your implementation
 
+                }
             }
         }
     }
@@ -289,5 +298,9 @@ public class GameBoard {
             }
         }
         return true;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

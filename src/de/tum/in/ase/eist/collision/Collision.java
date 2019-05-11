@@ -16,6 +16,10 @@ public class Collision {
     protected Car car2;
     public boolean isCollision;
 
+    protected Collision() {
+
+    }
+
     public Collision(Car car1, Car car2) {
         this.car1 = car1;
         this.car2 = car2;
