@@ -1,5 +1,6 @@
 package de.tum.in.ase.eist;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +60,11 @@ public class GameBoard {
      */
     public void addCars() {
         for (int i = 0; i < NUMBER_OF_SLOW_CARS; i++) {
-            this.cars.add(new Pokemon((int) this.size.getWidth(), (int) this.size.getHeight()));
+            if (GraphicsEnvironment.isHeadless()) {
+                this.cars.add(new SlowCar((int) this.size.getWidth(), (int) this.size.getHeight()));
+            }else {
+                this.cars.add(new Pokemon((int) this.size.getWidth(), (int) this.size.getHeight()));
+            }
         }
     }
 
