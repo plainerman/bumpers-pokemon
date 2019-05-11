@@ -30,7 +30,7 @@ public class GameBoardUI extends Canvas implements Runnable {
     private GameBoard gameBoard;
     private Dimension2D size;
     private Toolbar toolBar;
-    public static boolean debug = true;
+    public static boolean debug = false;
 
     /**
      * Sets up all attributes, starts the mouse steering and sets up all graphics
@@ -40,7 +40,7 @@ public class GameBoardUI extends Canvas implements Runnable {
     public GameBoardUI(Toolbar toolBar) {
         this.toolBar = toolBar;
         this.size = getPreferredSize();
-        this.gameBoard = new GameBoard(this.size);
+        this.gameBoard = new GameBoard(this, this.size);
         this.widthProperty().set(this.size.getWidth());
         this.heightProperty().set(this.size.getHeight());
         this.size = new Dimension2D(getWidth(), getHeight());
@@ -124,8 +124,7 @@ public class GameBoardUI extends Canvas implements Runnable {
      * @param graphics used to draw changes
      */
     private void paint(GraphicsContext graphics) {
-        graphics.setFill(backgroundColor);
-        graphics.fillRect(0, 0, getWidth(), getHeight());
+        clear(graphics);
 
         for (Car car : this.gameBoard.getCars()) {
             paintCar(car, graphics);
@@ -134,13 +133,22 @@ public class GameBoardUI extends Canvas implements Runnable {
         paintCar(this.gameBoard.getPlayerCar(), graphics);
     }
 
+    public void clear(GraphicsContext graphics) {
+        clear(graphics, backgroundColor);
+    }
+
+    public void clear(GraphicsContext graphics, Color color) {
+        graphics.setFill(color);
+        graphics.fillRect(0, 0, getWidth(), getHeight());
+    }
+
     /**
      * Show image of a car at the current position of the car.
      *
      * @param car      to be drawn
      * @param graphics used to draw changes
      */
-    private void paintCar(Car car, GraphicsContext graphics) {
+    public void paintCar(Car car, GraphicsContext graphics) {
         if (!car.isCrunched) {
             Point2D carPosition = car.getPosition();
             Point2D canvasPosition = convertPosition(carPosition);

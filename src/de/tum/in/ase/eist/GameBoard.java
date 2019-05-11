@@ -27,6 +27,7 @@ public class GameBoard {
     // the player object with player car object
     private Player player;
     private AudioPlayer audioPlayer;
+    private final GameBoardUI ui;
     private Dimension2D size;
     private MouseSteering mouseSteering;
     // list of all loser cars (needed for testing, DO NOT DELETE THIS)
@@ -50,7 +51,8 @@ public class GameBoard {
      *
      * @param size of the gameboard
      */
-    public GameBoard(Dimension2D size) {
+    public GameBoard(GameBoardUI ui, Dimension2D size) {
+        this.ui = ui;
         this.size = size;
         Car playerCar = pokemon ? new FastCar(new Dimension2D(30, 30), this.size.getHeight()) :
                 new FastCar(250, 30, this.size.getHeight());
@@ -214,6 +216,7 @@ public class GameBoard {
                         new Collision(player.getCar(), car);
 
                 if (collision.isCollision) {
+                    audioPlayer.playCrashSound();
                     Car winner = collision.evaluate();
                     Car loser = collision.evaluateLoser();
 //                if (pokemon) {
@@ -222,7 +225,6 @@ public class GameBoard {
 //                }
                     System.out.println(winner);
                     loserCars.add(loser);
-                    audioPlayer.playCrashSound();
 
                     loser.setCrunched();
 
@@ -302,5 +304,21 @@ public class GameBoard {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public boolean isMoveCars() {
+        return moveCars;
+    }
+
+    public void setMoveCars(boolean moveCars) {
+        this.moveCars = moveCars;
+    }
+
+    public GameBoardUI getUi() {
+        return ui;
+    }
+
+    public Dimension2D getSize() {
+        return size;
     }
 }

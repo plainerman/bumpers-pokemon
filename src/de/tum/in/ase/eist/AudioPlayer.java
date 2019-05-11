@@ -81,8 +81,10 @@ public class AudioPlayer {
 
     public void endCrashSound(boolean continueBackground) {
         if (mediaPlayerBang != null) mediaPlayerBang.stop();
-        if (continueBackground && currentBackgroundTime != null)
+        if (continueBackground && currentBackgroundTime != null) {
             this.mediaPlayer.setStartTime(currentBackgroundTime);
+            this.mediaPlayer.play();
+        }
     }
 
     /**
