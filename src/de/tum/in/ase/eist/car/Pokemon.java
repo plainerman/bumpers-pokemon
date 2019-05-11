@@ -30,4 +30,8 @@ public class Pokemon extends Car {
         this.index = tmpIndex; // the first pokemon is the pokemon of the player
         this.setImage("pokemon" + this.index + ".png");
     }
+
+    public static void resetUsedIndices() {
+        usedIndices.clear();
+    }
 }

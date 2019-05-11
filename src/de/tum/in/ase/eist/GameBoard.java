@@ -89,6 +89,7 @@ public class GameBoard {
         this.player.getCar().reset((int) this.size.getHeight());
         this.cars.clear();
         this.audioPlayer.endCrashSound(false);
+        Pokemon.resetUsedIndices();
         addCars();
     }
 

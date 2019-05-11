@@ -45,29 +45,34 @@ public class PokemonCollision extends Collision {
 
         final long duration = 250;
         int i = 0;
-        while (this.gameBoard.isRunning() && i < 3) {
+        while (this.gameBoard.isRunning() && i < 4) {
             ui.clear(gc, Color.BLACK);
             paintCarsAndSleep(ui, gc, duration);
 
             ui.clear(gc, Color.WHITE);
             paintCarsAndSleep(ui, gc, duration);
 
-            gc.restore();
-            paintCarsAndSleep(ui, gc, duration);
-
             i++;
         }
 
-        //TODO: evaluate
+        ui.clear(gc, Color.BLACK);
+        paintCarsAndSleep(ui, gc, duration);
+
+        winner = evaluate(gameBoard, ui, gc);
 
         sleep(2000);
 
         gameBoard.setMoveCars(true);
-        gameBoard.getAudioPlayer().endCrashSound(true);
-
-        winner = gameBoard.getPlayerCar();
+        gameBoard.getAudioPlayer().endCrashSound(this.gameBoard.isRunning());
 
         return winner;
+    }
+
+    protected Car evaluate(GameBoard gameBoard, GameBoardUI ui, GraphicsContext gc) {
+        ui.clear(gc);
+
+        sleep(2000);
+        return gameBoard.getPlayerCar();
     }
 
     private void paintCarsAndSleep(GameBoardUI ui, GraphicsContext gc, long duration) {
