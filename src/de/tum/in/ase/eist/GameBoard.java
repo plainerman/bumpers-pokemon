@@ -80,6 +80,7 @@ public class GameBoard {
     public void resetCars() {
         this.player.getCar().reset((int) this.size.getHeight());
         this.cars.clear();
+        this.audioPlayer.endCrashSound(false);
         addCars();
     }
 
