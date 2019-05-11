@@ -17,4 +17,8 @@ public class SlowCar extends Car {
 		this.setRandomSpeed();
 		this.setImage(DEFAULT_SLOW_CAR_IMAGE_FILE); 
 	}
+
+	public SlowCar(int maxX, int maxY) {
+		super(maxX, maxY);
+	}
 }

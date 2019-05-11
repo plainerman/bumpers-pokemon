@@ -17,4 +17,8 @@ public class FastCar extends Car {
 		this.setRandomSpeed();
 		this.setImage(DEFAULT_FAST_CAR_IMAGE_FILE); 
 	}
+
+	public FastCar(int maxX, int maxY){
+		super(maxX, maxY);
+	}
 }

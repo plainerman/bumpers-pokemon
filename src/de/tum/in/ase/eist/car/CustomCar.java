@@ -20,4 +20,8 @@ public class CustomCar extends Car {
         this.setRandomSpeed();
         this.setImage(DEFAULT_CUSTOM_CAR_IMAGE_FILE);
     }
+
+    public CustomCar(int maxX, int maxY) {
+        super(maxX, maxY);
+    }
 }
