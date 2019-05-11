@@ -9,6 +9,7 @@ import de.tum.in.ase.eist.car.FastCar;
 import de.tum.in.ase.eist.car.Pokemon;
 import de.tum.in.ase.eist.car.SlowCar;
 import de.tum.in.ase.eist.collision.Collision;
+import de.tum.in.ase.eist.collision.PokemonCollision;
 import javafx.application.Platform;
 import javafx.geometry.Dimension2D;
 import javafx.scene.control.Alert;
@@ -36,6 +37,7 @@ public class GameBoard {
     public String result;
     public boolean printed;
     private boolean gameOver = false;
+    private boolean pokemon = !GraphicsEnvironment.isHeadless();
 
     //constants
     public static int NUMBER_OF_SLOW_CARS = 5;
@@ -47,10 +49,10 @@ public class GameBoard {
      * @param size of the gameboard
      */
     public GameBoard(Dimension2D size) {
-        Car playerCar = new FastCar(250, 30);
+        this.size = size;
+        Car playerCar = new FastCar(250, 30, this.size.getHeight());
         this.player = new Player(playerCar);
         this.audioPlayer = new AudioPlayer();
-        this.size = size;
         this.result = "undefined";
         this.addCars();
     }
@@ -61,9 +63,9 @@ public class GameBoard {
     public void addCars() {
         for (int i = 0; i < NUMBER_OF_SLOW_CARS; i++) {
             if (GraphicsEnvironment.isHeadless()) {
-                this.cars.add(new SlowCar((int) this.size.getWidth(), (int) this.size.getHeight()));
-            }else {
-                this.cars.add(new Pokemon((int) this.size.getWidth(), (int) this.size.getHeight()));
+                this.cars.add(new SlowCar((int) this.size.getWidth(), (int) this.size.getHeight(), this.size.getHeight()));
+            } else {
+                this.cars.add(new Pokemon((int) this.size.getWidth(), (int) this.size.getHeight(), this.size.getHeight()));
             }
         }
     }
@@ -202,11 +204,16 @@ public class GameBoard {
             // Create a new collision object
             // and check if the collision between player car and autonomous car evaluates as expected
 
-            Collision collision = new Collision(player.getCar(), car);
+            Collision collision = pokemon ? new PokemonCollision(player.getCar(), car) :
+                    new Collision(player.getCar(), car);
 
             if (collision.isCollision) {
                 Car winner = collision.evaluate();
                 Car loser = collision.evaluateLoser();
+//                if (pokemon) {
+//                    if (loser != player.getCar() && winner != player.getCar())
+//                        continue;
+//                }
                 System.out.println(winner);
                 loserCars.add(loser);
                 audioPlayer.playCrashSound();

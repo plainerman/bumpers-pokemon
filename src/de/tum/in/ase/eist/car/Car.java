@@ -6,6 +6,7 @@ import java.io.InputStream;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
+import javafx.scene.shape.Rectangle;
 
 /**
  * Abstract class for cars. Objects for this class cannot be instantiated.
@@ -24,7 +25,10 @@ public abstract class Car {
     private int direction = 90;
     public boolean isCrunched = false;
 
-    public Car(int maxX, int maxY, Dimension2D size) {
+    private final double height;
+
+    public Car(int maxX, int maxY, Dimension2D size, double height) {
+        this.height = height;
         this.size = size;
         int carX = (int) (Math.random() * (maxX - getSize().getWidth()));
         int carY = (int) (Math.random() * (maxY - getSize().getHeight()));
@@ -47,8 +51,8 @@ public abstract class Car {
      * @param maxX Maximum x coordinate (width) of the game board
      * @param maxY Maximum y coordinate (height) of the game board
      */
-    public Car(int maxX, int maxY) {
-        this(maxX, maxY, new Dimension2D(50, 25));
+    public Car(int maxX, int maxY, double height) {
+        this(maxX, maxY, new Dimension2D(50, 25), height);
     }
 
     /**
@@ -171,6 +175,15 @@ public abstract class Car {
 
     public final boolean isCrunched() {
         return this.isCrunched;
+    }
+
+    public Rectangle getRectangle() {
+        Point2D p1 = getPosition();
+        Dimension2D d1 = getSize();
+        Rectangle r1 = new javafx.scene.shape.Rectangle(p1.getX() + d1.getWidth() / 2,  height - p1.getY(), d1.getWidth(), d1.getHeight());
+        r1.setX(r1.getX() - d1.getWidth() / 2);
+
+        return r1;
     }
 
     /**

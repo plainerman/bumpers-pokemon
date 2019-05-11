@@ -10,8 +10,8 @@ public class SlowCar extends Car {
 	 * @param maxX Maximum x coordinate (width) of the game board
 	 * @param maxY Maximum y coordinate (height) of the game board
 	 */
-	public SlowCar(int maxX, int maxY) {
-		super(maxX, maxY);
+	public SlowCar(int maxX, int maxY, double height) {
+		super(maxX, maxY, height);
 		this.MIN_SPEED = 2;
 		this.MAX_SPEED = 5;
 		this.setRandomSpeed();
