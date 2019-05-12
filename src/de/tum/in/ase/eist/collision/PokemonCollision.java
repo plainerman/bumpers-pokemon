@@ -107,9 +107,8 @@ public class PokemonCollision extends Collision {
                            PokemonData pokemon, Point2D playerPos, Point2D pokemonPos) {
         final Random rand = new Random();
 
-        final int animationFrameCount = 50;
+        final int animationFrameCount = 40;
         int animationIndex = 0;
-
 
         move = null;
         boolean isPlayerTurn = true;
@@ -120,9 +119,13 @@ public class PokemonCollision extends Collision {
 
         showMoves(ui);
 
+        final Point2D initialPlayerPos = playerPos;
+        final Point2D initialPokemonPos = pokemonPos;
+        final Point2D distance = playerPos.subtract(pokemonPos).normalize().multiply(4);
+
         while (gameBoard.isRunning() && player.getHealth() > 0 && pokemon.getHealth() > 0) {
             ui.clear(gc);
-            renderFight(ui, gc, player, pokemon, playerPos, pokemonPos, true);
+            renderFight(ui, gc, player, pokemon, playerPos, initialPlayerPos, pokemonPos, initialPokemonPos, true);
 
             if (move != null) {
                 gc.setFill(Color.BLACK);
@@ -132,12 +135,42 @@ public class PokemonCollision extends Collision {
 
                 animationIndex++;
 
-                if (animationIndex == animationFrameCount) {
+                if (animationIndex < animationFrameCount) {
+
+                    if (currentPokemon == player) {
+                        playerPos = playerPos.subtract(distance);
+                    } else {
+                        pokemonPos = pokemonPos.add(distance);
+                    }
+                } else if (animationIndex == animationFrameCount) {
                     gameBoard.getAudioPlayer().playHitSound();
-                }
-                if (animationIndex >= animationFrameCount) {
+                    playerPos = initialPlayerPos;
+                    pokemonPos = initialPokemonPos;
+                } else {
                     PokemonData otherPokemon = currentPokemon == player ? pokemon : player;
                     otherPokemon.damage(move.strength);
+
+                    for (int i = 0; i < 2; i++) {
+                        ui.clear(gc);
+                        if (currentPokemon == player) {
+                            renderFight(ui, gc, player, pokemon, playerPos, initialPlayerPos, pokemonPos,
+                                    initialPokemonPos,
+                                    true, true, false);
+                        } else {
+                            renderFight(ui, gc, player, pokemon, playerPos, initialPlayerPos, pokemonPos,
+                                    initialPokemonPos
+                                    , true, false, true);
+                        }
+
+                        sleep(100);
+                        ui.clear(gc);
+
+                        renderFight(ui, gc, player, pokemon, playerPos, initialPlayerPos, pokemonPos, initialPokemonPos,
+                                true);
+
+                        sleep(100);
+                    }
+
                     System.out.println(currentPokemon.getName() + " used " + move.name + " with a strength of " + move.strength);
 
                     animationIndex = 0;
@@ -172,7 +205,7 @@ public class PokemonCollision extends Collision {
             pokemonPos = pokemonPos.add(0, pokemonFactor);
 
             ui.clear(gc);
-            renderFight(ui, gc, player, pokemon, playerPos, pokemonPos, false);
+            renderFight(ui, gc, player, pokemon, playerPos, playerPos, pokemonPos, pokemonPos, false);
 
             sleep(GameBoardUI.SLEEP_TIME / 4);
         }
@@ -212,19 +245,30 @@ public class PokemonCollision extends Collision {
         }
     }
 
+
     private void renderFight(GameBoardUI ui, GraphicsContext gc, PokemonData player, PokemonData pokemon,
-                             Point2D playerPos, Point2D pokemonPos, boolean renderHealth) {
-        gc.drawImage(player.icon, playerPos.getX(), playerPos.getY(), SIZE, SIZE);
-        gc.drawImage(pokemon.icon, pokemonPos.getX(), pokemonPos.getY(), SIZE, SIZE);
+                             Point2D playerPos, Point2D textPlayerPos, Point2D pokemonPos, Point2D textPokemonPos,
+                             boolean renderHealth) {
+        renderFight(ui, gc, player, pokemon, playerPos, textPlayerPos, pokemonPos, textPokemonPos, renderHealth, true
+                , true);
+    }
+
+    private void renderFight(GameBoardUI ui, GraphicsContext gc, PokemonData player, PokemonData pokemon,
+                             Point2D playerPos, Point2D textPlayerPos, Point2D pokemonPos, Point2D textPokemonPos,
+                             boolean renderHealth, boolean renderPlayer, boolean renderPokemon) {
+        if (renderPlayer)
+            gc.drawImage(player.icon, playerPos.getX(), playerPos.getY(), SIZE, SIZE);
+        if (renderPokemon)
+            gc.drawImage(pokemon.icon, pokemonPos.getX(), pokemonPos.getY(), SIZE, SIZE);
 
         if (renderHealth) {
             gc.setFill(Color.BLACK);
             gc.setTextAlign(TextAlignment.LEFT);
             gc.fillText(player.getName() + ": " + player.getHealth() + " / " + player.getMaxHealth(),
-                    ui.getWidth() - playerPos.getX() - 80, playerPos.getY() + SIZE / 2.0);
+                    ui.getWidth() - textPlayerPos.getX() - 80, textPlayerPos.getY() + SIZE / 2.0);
             gc.setTextAlign(TextAlignment.RIGHT);
             gc.fillText(pokemon.getName() + ": " + pokemon.getHealth() + " / " + pokemon.getMaxHealth(),
-                    ui.getWidth() - pokemonPos.getX(), pokemonPos.getY() + SIZE / 2.0);
+                    ui.getWidth() - textPokemonPos.getX(), textPokemonPos.getY() + SIZE / 2.0);
             gc.setFill(GameBoardUI.BACKGROUND_COLOR);
         }
     }
