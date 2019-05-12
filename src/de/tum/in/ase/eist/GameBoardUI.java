@@ -17,7 +17,7 @@ import java.awt.*;
  * start button on the tool bar and stops by the stop button.
  */
 public class GameBoardUI extends Canvas implements Runnable {
-    private static Color backgroundColor = Color.WHITE;
+    public final static Color BACKGROUND_COLOR = Color.WHITE;
     public static int SLEEP_TIME = 1000 / 25; // this gives us 25fps
     public static Dimension2D DEFAULT_SIZE = new Dimension2D(500, 300);
     // attribute inherited by the JavaFX Canvas class
@@ -134,7 +134,7 @@ public class GameBoardUI extends Canvas implements Runnable {
     }
 
     public void clear(GraphicsContext graphics) {
-        clear(graphics, backgroundColor);
+        clear(graphics, BACKGROUND_COLOR);
     }
 
     public void clear(GraphicsContext graphics, Color color) {

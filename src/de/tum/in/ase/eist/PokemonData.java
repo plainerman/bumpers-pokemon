@@ -66,6 +66,10 @@ public class PokemonData {
         return health;
     }
 
+    public int getMaxHealth() {
+        return getInfo().health;
+    }
+
     public String getName() {
         return getInfo().name;
     }

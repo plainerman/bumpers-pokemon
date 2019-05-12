@@ -10,6 +10,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.TextAlignment;
 
 import java.util.Random;
 
@@ -107,6 +108,15 @@ public class PokemonCollision extends Collision {
 
             gc.drawImage(player.icon, playerPos.getX(), playerPos.getY(), SIZE, SIZE);
             gc.drawImage(pokemon.icon, pokemonPos.getX(), pokemonPos.getY(), SIZE, SIZE);
+
+            gc.setFill(Color.BLACK);
+            gc.setTextAlign(TextAlignment.LEFT);
+            gc.fillText(player.getName() + ": " + player.getHealth() + " / " + player.getMaxHealth(),
+                    ui.getWidth() - playerPos.getX() - 80, playerPos.getY() + SIZE / 2.0);
+            gc.setTextAlign(TextAlignment.RIGHT);
+            gc.fillText(pokemon.getName() + ": " + pokemon.getHealth() + " / " + pokemon.getMaxHealth(),
+                    ui.getWidth() - pokemonPos.getX(), pokemonPos.getY() + SIZE / 2.0);
+            gc.setFill(GameBoardUI.BACKGROUND_COLOR);
 
             if (move != null) {
                 animationIndex++;
