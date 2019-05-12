@@ -23,7 +23,7 @@ public class PokemonData {
             new MetaInfo("Charizard", 120, Move.TAIL_WHIP, Move.FLARE_BLITZ, Move.HEAT_WAVE),
             new MetaInfo("Pidgeotto", 80, Move.TAIL_WHIP, Move.QUICK_ATTACK, Move.RAZOR_WIND, Move.WING_ATTACK),
             new MetaInfo("Dragonite", 150, Move.TAIL_WHIP, Move.DRAGON_TAIL, Move.SLAM),
-            new MetaInfo("Meganium ", 180, Move.SLAM, Move.MAGICAL_LEAF, Move.SOLAR_BEAM),
+            new MetaInfo("Meganium", 180, Move.SLAM, Move.MAGICAL_LEAF, Move.SOLAR_BEAM),
             new MetaInfo("Torkoal", 200, Move.HEAT_WAVE, Move.FLARE_BLITZ, Move.EARTH_QUAKE),
             new MetaInfo("Walrein", 300, Move.SLAM, Move.ICE_BALL, Move.BLIZZARD),
     };

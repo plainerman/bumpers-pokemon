@@ -125,6 +125,11 @@ public class PokemonCollision extends Collision {
             renderFight(ui, gc, player, pokemon, playerPos, pokemonPos, true);
 
             if (move != null) {
+                gc.setFill(Color.BLACK);
+                gc.setTextAlign(TextAlignment.LEFT);
+                gc.fillText(currentPokemon.getName() + " uses " + move.name + "!", 20, ui.getHeight() - 20);
+                gc.setFill(GameBoardUI.BACKGROUND_COLOR);
+
                 animationIndex++;
 
                 if (animationIndex >= animationFrameCount) {
