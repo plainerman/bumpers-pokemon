@@ -132,6 +132,9 @@ public class PokemonCollision extends Collision {
 
                 animationIndex++;
 
+                if (animationIndex == animationFrameCount) {
+                    gameBoard.getAudioPlayer().playHitSound();
+                }
                 if (animationIndex >= animationFrameCount) {
                     PokemonData otherPokemon = currentPokemon == player ? pokemon : player;
                     otherPokemon.damage(move.strength);
@@ -157,7 +160,9 @@ public class PokemonCollision extends Collision {
             sleep(GameBoardUI.SLEEP_TIME);
         }
 
-        ui.getStackPane().getChildren().remove(gridPane);
+        Platform.runLater(() -> {
+            ui.getStackPane().getChildren().remove(gridPane);
+        });
 
         final int playerFactor = player.getHealth() > 0 ? 0 : 1;
         final int pokemonFactor = pokemon.getHealth() > 0 ? 0 : -1;

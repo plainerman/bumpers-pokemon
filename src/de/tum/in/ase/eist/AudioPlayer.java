@@ -11,8 +11,10 @@ public class AudioPlayer {
 
     public static String BACKGROUND_MUSIC_FILE = "Music.wav";
     public static String CRASH_MUSIC_FILE = "Crash.wav";
+    public static String HIT_MUSIC_FILE = "Hit.wav";
     private static Media MUSIC;
     private static Media CRASH;
+    private static Media HIT;
     private MediaPlayer mediaPlayer;
     private static boolean playingBackgroundMusic;
     public boolean crashSoundPlayed = false;
@@ -28,6 +30,7 @@ public class AudioPlayer {
     public AudioPlayer() {
         AudioPlayer.MUSIC = loadAudioFile(BACKGROUND_MUSIC_FILE);
         AudioPlayer.CRASH = loadAudioFile(CRASH_MUSIC_FILE);
+        AudioPlayer.HIT =  loadAudioFile(HIT_MUSIC_FILE);
         AudioPlayer.playingBackgroundMusic = false;
     }
 
@@ -40,6 +43,7 @@ public class AudioPlayer {
         if (!AudioPlayer.playingBackgroundMusic) {
             AudioPlayer.playingBackgroundMusic = true;
             this.mediaPlayer = new MediaPlayer(AudioPlayer.MUSIC);
+            mediaPlayer.setVolume(0.5);
             this.mediaPlayer.setAutoPlay(true);
             // Loop for the main music sound:
             this.mediaPlayer.setOnEndOfMedia(new Runnable() {
@@ -66,6 +70,10 @@ public class AudioPlayer {
         }
     }
 
+    public void playHitSound() {
+        new MediaPlayer(AudioPlayer.HIT).play();
+    }
+
     /**
      * Plays the Bang sound when Cars crash
      */
@@ -74,6 +82,12 @@ public class AudioPlayer {
         this.currentBackgroundTime = this.mediaPlayer.getCurrentTime();
         this.mediaPlayer.stop();
         mediaPlayerBang = new MediaPlayer(AudioPlayer.CRASH);
+        mediaPlayerBang.setVolume(0.5);
+        this.mediaPlayerBang.setOnEndOfMedia(new Runnable() {
+            public void run() {
+                AudioPlayer.this.mediaPlayerBang.seek(Duration.ZERO);
+            }
+        });
         mediaPlayerBang.play();
         // set boolean Variable to true
         this.crashSoundPlayed = true;
