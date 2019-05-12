@@ -10,7 +10,7 @@ import java.util.Set;
 public class Pokemon extends Car {
 
     protected final int index;
-    protected static final int POKEMON_COUNT = 5;
+    protected static final int POKEMON_COUNT = 6;
 
     public final PokemonData data;
 
