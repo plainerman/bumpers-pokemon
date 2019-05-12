@@ -6,8 +6,14 @@ import de.tum.in.ase.eist.Move;
 import de.tum.in.ase.eist.PokemonData;
 import de.tum.in.ase.eist.car.Car;
 import de.tum.in.ase.eist.car.Pokemon;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.TextAlignment;
@@ -90,7 +96,14 @@ public class PokemonCollision extends Collision {
         return winner;
     }
 
-    protected Car evaluate(GameBoard gameBoard, GameBoardUI ui, GraphicsContext gc, PokemonData player,
+    private Move move;
+    private GridPane gridPane;
+
+    private int getBit(int n, int k) {
+        return (n >> k) & 1;
+    }
+
+    protected Car evaluate(GameBoard gameBoard, GameBoardUI ui, GraphicsContext gc, final PokemonData player,
                            PokemonData pokemon, Point2D playerPos, Point2D pokemonPos) {
         final Random rand = new Random();
 
@@ -98,10 +111,14 @@ public class PokemonCollision extends Collision {
         int animationIndex = 0;
 
 
+        move = null;
         boolean isPlayerTurn = true;
 
-        Move move = null;
         PokemonData currentPokemon = player;
+
+        generateGridPane(ui, player);
+
+        showMoves(ui);
 
         while (gameBoard.isRunning() && player.getHealth() > 0 && pokemon.getHealth() > 0) {
             ui.clear(gc);
@@ -120,20 +137,27 @@ public class PokemonCollision extends Collision {
 
                     isPlayerTurn = !isPlayerTurn;
                     currentPokemon = isPlayerTurn ? player : pokemon;
+
+                    if (isPlayerTurn) {
+                        showMoves(ui);
+                    }
                 }
 
                 ui.getToolBar().setHealth(player.getHealth());
             } else {
-                move = currentPokemon.getMoves()[rand.nextInt(currentPokemon.getMoves().length)];
+                if (!isPlayerTurn) {
+                    move = currentPokemon.getMoves()[rand.nextInt(currentPokemon.getMoves().length)];
+                }
             }
             sleep(GameBoardUI.SLEEP_TIME);
         }
 
+        ui.getStackPane().getChildren().remove(gridPane);
+
         final int playerFactor = player.getHealth() > 0 ? 0 : 1;
         final int pokemonFactor = pokemon.getHealth() > 0 ? 0 : -1;
 
-
-        for (int i = 0; i < SIZE; i++) {
+        for (int i = 0; i < SIZE + 60 && gameBoard.isRunning(); i++) {
             playerPos = playerPos.add(0, playerFactor);
             pokemonPos = pokemonPos.add(0, pokemonFactor);
 
@@ -149,6 +173,33 @@ public class PokemonCollision extends Collision {
         Car pokemonCar = car1 == playerCar ? car2 : car1;
 
         return player.getHealth() > 0 ? playerCar : pokemonCar;
+    }
+
+    private void showMoves(GameBoardUI ui) {
+        Platform.runLater(() -> {
+            ui.getStackPane().getChildren().add(gridPane);
+        });
+    }
+
+    private void generateGridPane(GameBoardUI ui, PokemonData player) {
+        gridPane = new GridPane();
+        gridPane.setPadding(new Insets(0, 30, 30, 0));
+        gridPane.setAlignment(Pos.BOTTOM_RIGHT);
+
+        gridPane.setVgap(5);
+        gridPane.setHgap(5);
+
+        for (int i = 0; i < player.getMoves().length; i++) {
+            final int index = i;
+            final Button button = new Button(player.getMoves()[i].name);
+
+            button.setOnAction(e -> {
+                ui.getStackPane().getChildren().remove(gridPane);
+                move = player.getMoves()[index];
+            });
+
+            gridPane.add(button, getBit(i, 0), getBit(i, 1));
+        }
     }
 
     private void renderFight(GameBoardUI ui, GraphicsContext gc, PokemonData player, PokemonData pokemon,

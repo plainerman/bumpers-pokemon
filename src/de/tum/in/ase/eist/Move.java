@@ -16,7 +16,7 @@ public class Move {
     public static final Move FLARE_BLITZ = new Move("Flare Blitz", 100);
 
     public static final Move THUNDER_SHOCK = new Move("Thunder Shock", 70);
-    public static final Move THUNDER_BOLT = new Move("Thunder Shock", 90);
+    public static final Move THUNDER_BOLT = new Move("Thunder Bolt", 90);
 
     public static final Move EARTH_QUAKE = new Move("Earthquake", 100);
 

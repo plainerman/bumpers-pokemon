@@ -6,6 +6,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -31,6 +32,8 @@ public class GameBoardUI extends Canvas implements Runnable {
     private Dimension2D size;
     private Toolbar toolBar;
     public static boolean debug = false;
+
+    private StackPane stackPane;
 
     /**
      * Sets up all attributes, starts the mouse steering and sets up all graphics
@@ -192,5 +195,13 @@ public class GameBoardUI extends Canvas implements Runnable {
 
     public Toolbar getToolBar() {
         return toolBar;
+    }
+
+    public void setStackPane(StackPane stackPane) {
+        this.stackPane = stackPane;
+    }
+
+    public StackPane getStackPane() {
+        return stackPane;
     }
 }

@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 /**
@@ -37,9 +38,11 @@ public class BumpersApplication extends Application {
 		gridLayout.setVgap(5);
 		gridLayout.setPadding(new Insets(5, 5, 5, 5));
 
+		StackPane stackPane = new StackPane(this.gameBoardUI);
+		this.gameBoardUI.setStackPane(stackPane);
 		// add all components to the gridLayout
 		// second parameter is column index, second parameter is row index of grid
-		gridLayout.add(this.gameBoardUI, 0, 1);
+		gridLayout.add(stackPane, 0, 1);
 		gridLayout.add(this.toolBar, 0, 0);
 
 		// scene and stages
