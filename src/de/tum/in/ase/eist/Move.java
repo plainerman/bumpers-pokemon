@@ -23,6 +23,9 @@ public class Move {
     public static final Move BLIZZARD = new Move("Blizzard", 110);
     public static final Move ICE_BALL = new Move("Ice Ball", 40);
 
+    public static final Move MAGICAL_LEAF = new Move("Magical Leaf", 60);
+    public static final Move SOLAR_BEAM = new Move("Solar Beam", 100);
+
     public final String name;
     public final int strength;
 

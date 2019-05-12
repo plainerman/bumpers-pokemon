@@ -2,6 +2,7 @@ package de.tum.in.ase.eist.collision;
 
 import de.tum.in.ase.eist.GameBoard;
 import de.tum.in.ase.eist.GameBoardUI;
+import de.tum.in.ase.eist.Move;
 import de.tum.in.ase.eist.PokemonData;
 import de.tum.in.ase.eist.car.Car;
 import de.tum.in.ase.eist.car.Pokemon;
@@ -9,6 +10,8 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+
+import java.util.Random;
 
 public class PokemonCollision extends Collision {
     private GameBoard gameBoard;
@@ -88,20 +91,49 @@ public class PokemonCollision extends Collision {
 
     protected Car evaluate(GameBoard gameBoard, GameBoardUI ui, GraphicsContext gc, PokemonData player,
                            PokemonData pokemon, Point2D playerPos, Point2D pokemonPos) {
-        int i = 0;
-        while (gameBoard.isRunning() && i++ < 100) {
+        final Random rand = new Random();
+
+        final int animationFrameCount = 50;
+        int animationIndex = 0;
+
+
+        boolean isPlayerTurn = true;
+
+        Move move = null;
+        PokemonData currentPokemon = player;
+
+        while (gameBoard.isRunning() && player.getHealth() > 0 && pokemon.getHealth() > 0) {
             ui.clear(gc);
 
             gc.drawImage(player.icon, playerPos.getX(), playerPos.getY(), SIZE, SIZE);
             gc.drawImage(pokemon.icon, pokemonPos.getX(), pokemonPos.getY(), SIZE, SIZE);
 
+            if (move != null) {
+                animationIndex++;
 
-            player.health -= 1;
-            ui.getToolBar().setHealth(player.health);
+                if (animationIndex >= animationFrameCount) {
+                    PokemonData otherPokemon = currentPokemon == player ? pokemon : player;
+                    otherPokemon.damage(move.strength);
+                    System.out.println(currentPokemon.getName() + " used " + move.name + " with a strength of " + move.strength);
+
+                    animationIndex = 0;
+                    move = null;
+
+                    isPlayerTurn = !isPlayerTurn;
+                    currentPokemon = isPlayerTurn ? player : pokemon;
+                }
+
+                ui.getToolBar().setHealth(player.getHealth());
+            } else {
+                move = currentPokemon.getMoves()[rand.nextInt(currentPokemon.getMoves().length)];
+            }
             sleep(ui.SLEEP_TIME);
         }
 
-        return gameBoard.getPlayerCar();
+        Car playerCar = gameBoard.getPlayerCar();
+        Car pokemonCar = car1 == playerCar ? car2 : car1;
+
+        return player.getHealth() > 0 ? playerCar : pokemonCar;
     }
 
     private void paintCarsAndSleep(GameBoardUI ui, GraphicsContext gc, long duration) {

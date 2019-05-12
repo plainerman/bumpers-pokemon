@@ -90,7 +90,10 @@ public class GameBoard {
         this.cars.clear();
         this.audioPlayer.endCrashSound(false);
         Pokemon.resetUsedIndices();
-        if (getPlayerCar().pokemon != null) getPlayerCar().pokemon.reset();
+        if (getPlayerCar().pokemon != null) {
+            getPlayerCar().pokemon.reset();
+            ui.getToolBar().setHealth(getPlayerCar().pokemon.getHealth());
+        }
         addCars();
     }
 
@@ -208,6 +211,7 @@ public class GameBoard {
 
             // iterate through all cars (except player car) and check if it is crunched
             for (Car car : cars) {
+                if (gameOver && pokemon) break;
                 if (car.isCrunched()) {
                     continue; // because there is no need to check for a collision
                 }
@@ -216,7 +220,7 @@ public class GameBoard {
                 // Hint: Make sure to create a subclass of the class Collision
                 // and store it in the new Collision package.
                 // Create a new collision object
-                // and check if the collision between player car and autonomous car evaluates as expected
+                // and checrek if the collision between player car and autonomous car evaluates as expected
 
                 Collision collision = pokemon ? new PokemonCollision(this, player.getCar(), car) :
                         new Collision(player.getCar(), car);
