@@ -1,9 +1,6 @@
 package de.tum.in.ase.eist.collision;
 
-import de.tum.in.ase.eist.GameBoard;
-import de.tum.in.ase.eist.GameBoardUI;
-import de.tum.in.ase.eist.Move;
-import de.tum.in.ase.eist.PokemonData;
+import de.tum.in.ase.eist.*;
 import de.tum.in.ase.eist.car.Car;
 import de.tum.in.ase.eist.car.Pokemon;
 import javafx.application.Platform;
@@ -128,9 +125,21 @@ public class PokemonCollision extends Collision {
             renderFight(ui, gc, player, pokemon, playerPos, initialPlayerPos, pokemonPos, initialPokemonPos, true);
 
             if (move != null) {
+                final PokemonData otherPokemon = currentPokemon == player ? pokemon : player;
+                final double factor = Type.FACTOR[move.type.ordinal()][otherPokemon.getType().ordinal()];
+                String text = currentPokemon.getName() + " uses " + move.name + "!";
+                if (factor != 1.0) {
+                    if (factor > 1.0) {
+                        text += " It is very effective!";
+                    } else if (factor <= 0.0) {
+                        text += " It is ineffective!";
+                    } else {
+                        text += " It is not very effective!";
+                    }
+                }
                 gc.setFill(Color.BLACK);
                 gc.setTextAlign(TextAlignment.LEFT);
-                gc.fillText(currentPokemon.getName() + " uses " + move.name + "!", 20, ui.getHeight() - 20);
+                gc.fillText(text, 20, ui.getHeight() - 20);
                 gc.setFill(GameBoardUI.BACKGROUND_COLOR);
 
                 animationIndex++;
@@ -147,8 +156,8 @@ public class PokemonCollision extends Collision {
                     playerPos = initialPlayerPos;
                     pokemonPos = initialPokemonPos;
                 } else {
-                    PokemonData otherPokemon = currentPokemon == player ? pokemon : player;
-                    otherPokemon.damage(move.strength);
+                    final int damage = (int) (move.strength * factor);
+                    otherPokemon.damage(damage);
 
                     for (int i = 0; i < 2; i++) {
                         ui.clear(gc);
@@ -171,7 +180,7 @@ public class PokemonCollision extends Collision {
                         sleep(100);
                     }
 
-                    System.out.println(currentPokemon.getName() + " used " + move.name + " with a strength of " + move.strength);
+                    System.out.println(currentPokemon.getName() + " used " + move.name + " with a strength of " + damage + " (effectiveness: " + factor + ")");
 
                     animationIndex = 0;
                     move = null;
