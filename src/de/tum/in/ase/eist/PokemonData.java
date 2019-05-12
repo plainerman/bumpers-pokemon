@@ -23,7 +23,7 @@ public class PokemonData {
     }
 
     public static final MetaInfo[] DEFAULT_INFO = new MetaInfo[]{
-            new MetaInfo("Pikachu", ELECTRO, 500, Move.QUICK_ATTACK, Move.TAIL_WHIP, Move.THUNDER_BOLT,
+            new MetaInfo("Pikachu", ELECTRIC, 500, Move.QUICK_ATTACK, Move.TAIL_WHIP, Move.THUNDER_BOLT,
                     Move.THUNDER_SHOCK),
             new MetaInfo("Charizard", FIRE, 120, Move.TAIL_WHIP, Move.FLARE_BLITZ, Move.HEAT_WAVE),
             new MetaInfo("Pidgeotto", FLYING, 80, Move.TAIL_WHIP, Move.QUICK_ATTACK, Move.RAZOR_WIND, Move.WING_ATTACK),
