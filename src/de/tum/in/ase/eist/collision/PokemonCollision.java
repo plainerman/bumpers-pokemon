@@ -209,7 +209,7 @@ public class PokemonCollision extends Collision {
         final int playerFactor = player.getHealth() > 0 ? 0 : 1;
         final int pokemonFactor = pokemon.getHealth() > 0 ? 0 : -1;
 
-        for (int i = 0; i < SIZE + 60 && gameBoard.isRunning(); i++) {
+        for (int i = 0; i < SIZE + 60; i++) {
             playerPos = playerPos.add(0, playerFactor);
             pokemonPos = pokemonPos.add(0, pokemonFactor);
 
