@@ -105,18 +105,7 @@ public class PokemonCollision extends Collision {
 
         while (gameBoard.isRunning() && player.getHealth() > 0 && pokemon.getHealth() > 0) {
             ui.clear(gc);
-
-            gc.drawImage(player.icon, playerPos.getX(), playerPos.getY(), SIZE, SIZE);
-            gc.drawImage(pokemon.icon, pokemonPos.getX(), pokemonPos.getY(), SIZE, SIZE);
-
-            gc.setFill(Color.BLACK);
-            gc.setTextAlign(TextAlignment.LEFT);
-            gc.fillText(player.getName() + ": " + player.getHealth() + " / " + player.getMaxHealth(),
-                    ui.getWidth() - playerPos.getX() - 80, playerPos.getY() + SIZE / 2.0);
-            gc.setTextAlign(TextAlignment.RIGHT);
-            gc.fillText(pokemon.getName() + ": " + pokemon.getHealth() + " / " + pokemon.getMaxHealth(),
-                    ui.getWidth() - pokemonPos.getX(), pokemonPos.getY() + SIZE / 2.0);
-            gc.setFill(GameBoardUI.BACKGROUND_COLOR);
+            renderFight(ui, gc, player, pokemon, playerPos, pokemonPos, true);
 
             if (move != null) {
                 animationIndex++;
@@ -137,13 +126,46 @@ public class PokemonCollision extends Collision {
             } else {
                 move = currentPokemon.getMoves()[rand.nextInt(currentPokemon.getMoves().length)];
             }
-            sleep(ui.SLEEP_TIME);
+            sleep(GameBoardUI.SLEEP_TIME);
         }
+
+        final int playerFactor = player.getHealth() > 0 ? 0 : 1;
+        final int pokemonFactor = pokemon.getHealth() > 0 ? 0 : -1;
+
+
+        for (int i = 0; i < SIZE; i++) {
+            playerPos = playerPos.add(0, playerFactor);
+            pokemonPos = pokemonPos.add(0, pokemonFactor);
+
+            ui.clear(gc);
+            renderFight(ui, gc, player, pokemon, playerPos, pokemonPos, false);
+
+            sleep(GameBoardUI.SLEEP_TIME / 4);
+        }
+
+        sleep(200);
 
         Car playerCar = gameBoard.getPlayerCar();
         Car pokemonCar = car1 == playerCar ? car2 : car1;
 
         return player.getHealth() > 0 ? playerCar : pokemonCar;
+    }
+
+    private void renderFight(GameBoardUI ui, GraphicsContext gc, PokemonData player, PokemonData pokemon,
+                             Point2D playerPos, Point2D pokemonPos, boolean renderHealth) {
+        gc.drawImage(player.icon, playerPos.getX(), playerPos.getY(), SIZE, SIZE);
+        gc.drawImage(pokemon.icon, pokemonPos.getX(), pokemonPos.getY(), SIZE, SIZE);
+
+        if (renderHealth) {
+            gc.setFill(Color.BLACK);
+            gc.setTextAlign(TextAlignment.LEFT);
+            gc.fillText(player.getName() + ": " + player.getHealth() + " / " + player.getMaxHealth(),
+                    ui.getWidth() - playerPos.getX() - 80, playerPos.getY() + SIZE / 2.0);
+            gc.setTextAlign(TextAlignment.RIGHT);
+            gc.fillText(pokemon.getName() + ": " + pokemon.getHealth() + " / " + pokemon.getMaxHealth(),
+                    ui.getWidth() - pokemonPos.getX(), pokemonPos.getY() + SIZE / 2.0);
+            gc.setFill(GameBoardUI.BACKGROUND_COLOR);
+        }
     }
 
     private void paintCarsAndSleep(GameBoardUI ui, GraphicsContext gc, long duration) {
