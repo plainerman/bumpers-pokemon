@@ -7,7 +7,6 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
@@ -17,10 +16,24 @@ import javafx.scene.text.TextAlignment;
 
 import java.util.Random;
 
+/**
+ * This class handles the complete rendering and processing of pokemon fights and determining the winner.
+ */
 public class PokemonCollision extends Collision {
     private GameBoard gameBoard;
     private Car winner;
     public static final int SIZE = 100;
+
+    /**
+     * The currently selected attack move.
+     */
+    private Move move;
+    /**
+     * A canvas containing all moves of the player's pokemon.
+     */
+    private GridPane gridPane;
+
+    private final Random random = new Random();
 
     public PokemonCollision(GameBoard gameBoard, Car car1, Car car2) {
         super();
@@ -54,6 +67,7 @@ public class PokemonCollision extends Collision {
         GameBoardUI ui = gameBoard.getUi();
         GraphicsContext gc = ui.getGraphicsContext2D();
 
+        // play the intro (i.e. pokemons joining the fight)
         final long duration = 250;
         int i = 0;
         while (this.gameBoard.isRunning() && i < 4) {
@@ -93,16 +107,24 @@ public class PokemonCollision extends Collision {
         return winner;
     }
 
-    private Move move;
-    private GridPane gridPane;
-
     private int getBit(int n, int k) {
         return (n >> k) & 1;
     }
 
+    /**
+     * This method handles the complete fighting including animations and returns the winner of the figth.
+     *
+     * @param gameBoard  The basic gameboard used to manage the objects.
+     * @param ui         The ui this should render to. It is used to render buttons.
+     * @param gc         The context that will be used to manually render the animations.
+     * @param player     A reference to the pokemon of the player
+     * @param pokemon    A reference to the "enemy" pokemon.
+     * @param playerPos  The "core" position of the player's pokemon. Animations will use this and slightly adapt it.
+     * @param pokemonPos The "core" position of the enemy pokemon. Animations will use this and slightly adapt it.
+     * @return The winning car / pokemon.
+     */
     protected Car evaluate(GameBoard gameBoard, GameBoardUI ui, GraphicsContext gc, final PokemonData player,
                            PokemonData pokemon, Point2D playerPos, Point2D pokemonPos) {
-        final Random rand = new Random();
 
         final int animationFrameCount = 40;
         int animationIndex = 0;
@@ -127,16 +149,7 @@ public class PokemonCollision extends Collision {
             if (move != null) {
                 final PokemonData otherPokemon = currentPokemon == player ? pokemon : player;
                 final double factor = Type.FACTOR[move.type.ordinal()][otherPokemon.getType().ordinal()];
-                String text = currentPokemon.getName() + " uses " + move.name + "!";
-                if (factor != 1.0) {
-                    if (factor > 1.0) {
-                        text += " It is very effective!";
-                    } else if (factor <= 0.0) {
-                        text += " It is ineffective!";
-                    } else {
-                        text += " It is not very effective!";
-                    }
-                }
+                final String text = getMoveString(currentPokemon, factor);
                 gc.setFill(Color.BLACK);
                 gc.setTextAlign(TextAlignment.LEFT);
                 gc.fillText(text, 20, ui.getHeight() - 20);
@@ -145,7 +158,6 @@ public class PokemonCollision extends Collision {
                 animationIndex++;
 
                 if (animationIndex < animationFrameCount) {
-
                     if (currentPokemon == player) {
                         playerPos = playerPos.subtract(distance);
                     } else {
@@ -156,31 +168,9 @@ public class PokemonCollision extends Collision {
                     playerPos = initialPlayerPos;
                     pokemonPos = initialPokemonPos;
                 } else {
-                    final int damage = (int) (move.strength * factor);
-                    otherPokemon.damage(damage);
+                    processAttack(ui, gc, player, pokemon, playerPos, pokemonPos, currentPokemon, initialPlayerPos,
+                            initialPokemonPos, otherPokemon, factor);
 
-                    for (int i = 0; i < 2; i++) {
-                        ui.clear(gc);
-                        if (currentPokemon == player) {
-                            renderFight(ui, gc, player, pokemon, playerPos, initialPlayerPos, pokemonPos,
-                                    initialPokemonPos,
-                                    true, true, false);
-                        } else {
-                            renderFight(ui, gc, player, pokemon, playerPos, initialPlayerPos, pokemonPos,
-                                    initialPokemonPos
-                                    , true, false, true);
-                        }
-
-                        sleep(100);
-                        ui.clear(gc);
-
-                        renderFight(ui, gc, player, pokemon, playerPos, initialPlayerPos, pokemonPos, initialPokemonPos,
-                                true);
-
-                        sleep(100);
-                    }
-
-                    System.out.println(currentPokemon.getName() + " used " + move.name + " with a strength of " + damage + " (effectiveness: " + factor + ")");
 
                     animationIndex = 0;
                     move = null;
@@ -196,7 +186,7 @@ public class PokemonCollision extends Collision {
                 ui.getToolBar().setHealth(player.getHealth());
             } else {
                 if (!isPlayerTurn) {
-                    move = currentPokemon.getMoves()[rand.nextInt(currentPokemon.getMoves().length)];
+                    move = currentPokemon.getMoves()[random.nextInt(currentPokemon.getMoves().length)];
                 }
             }
             sleep(GameBoardUI.SLEEP_TIME);
@@ -206,6 +196,53 @@ public class PokemonCollision extends Collision {
             ui.getStackPane().getChildren().remove(gridPane);
         });
 
+        playDeathAnimation(ui, gc, player, pokemon, playerPos, pokemonPos);
+
+        sleep(200);
+
+        Car playerCar = gameBoard.getPlayerCar();
+        Car pokemonCar = car1 == playerCar ? car2 : car1;
+
+        return player.getHealth() > 0 ? playerCar : pokemonCar;
+    }
+
+    /**
+     * This method applies damage to the correct pokemon and renders the "hit" animation (blinking).
+     */
+    private void processAttack(GameBoardUI ui, GraphicsContext gc, PokemonData player, PokemonData pokemon,
+                               Point2D playerPos, Point2D pokemonPos, PokemonData currentPokemon,
+                               Point2D initialPlayerPos, Point2D initialPokemonPos, PokemonData otherPokemon,
+                               double factor) {
+        final int damage = (int) (move.strength * factor);
+        otherPokemon.damage(damage);
+
+        for (int i = 0; i < 2; i++) {
+            ui.clear(gc);
+            if (currentPokemon == player) {
+                renderFight(ui, gc, player, pokemon, playerPos, initialPlayerPos, pokemonPos,
+                        initialPokemonPos,
+                        true, true, false);
+            } else {
+                renderFight(ui, gc, player, pokemon, playerPos, initialPlayerPos, pokemonPos,
+                        initialPokemonPos
+                        , true, false, true);
+            }
+
+            sleep(100);
+            ui.clear(gc);
+
+            renderFight(ui, gc, player, pokemon, playerPos, initialPlayerPos, pokemonPos, initialPokemonPos,
+                    true);
+
+            sleep(100);
+        }
+    }
+
+    /**
+     * This method determines the losing pokemon and fades it away.
+     */
+    private void playDeathAnimation(GameBoardUI ui, GraphicsContext gc, PokemonData player, PokemonData pokemon,
+                                    Point2D playerPos, Point2D pokemonPos) {
         final int playerFactor = player.getHealth() > 0 ? 0 : 1;
         final int pokemonFactor = pokemon.getHealth() > 0 ? 0 : -1;
 
@@ -218,19 +255,28 @@ public class PokemonCollision extends Collision {
 
             sleep(GameBoardUI.SLEEP_TIME / 4);
         }
+    }
 
-        sleep(200);
-
-        Car playerCar = gameBoard.getPlayerCar();
-        Car pokemonCar = car1 == playerCar ? car2 : car1;
-
-        return player.getHealth() > 0 ? playerCar : pokemonCar;
+    /**
+     * This method converts a move and a factor to the given string. This method has to be changed if localization
+     * should be supported.
+     */
+    private String getMoveString(PokemonData currentPokemon, double factor) {
+        String text = currentPokemon.getName() + " uses " + move.name + "!";
+        if (factor != 1.0) {
+            if (factor > 1.0) {
+                text += " It is very effective!";
+            } else if (factor <= 0.0) {
+                text += " It is ineffective!";
+            } else {
+                text += " It is not very effective!";
+            }
+        }
+        return text;
     }
 
     private void showMoves(GameBoardUI ui) {
-        Platform.runLater(() -> {
-            ui.getStackPane().getChildren().add(gridPane);
-        });
+        Platform.runLater(() -> ui.getStackPane().getChildren().add(gridPane));
     }
 
     private void generateGridPane(GameBoardUI ui, PokemonData player) {
