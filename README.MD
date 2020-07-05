@@ -7,7 +7,7 @@ The class responsible for processing the battles is [PokemonCollision.java](http
 
 ## Screenshots
 ![The basic gameboard](https://i.imgur.com/2W5MB4q.png)
-![The battle mechanics](https://thumbs.gfycat.com/SimilarFlashyArizonaalligatorlizard-size_restricted.gif)
+![The battle mechanics](https://i.imgur.com/4AtQSdo.gif)
 
 ## License
 The code for the initial car game (Bumpers) was provided and developed by the [EIST team](https://ase.in.tum.de/lehrstuhl_1/teaching/summer-2019/123-teaching/st19/1032-eist-2019) and may only be used with their written permission.
